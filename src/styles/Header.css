@@ -1,0 +1,13 @@
+.cc-header {
+    text-align: center;
+}
+
+.cc-header-title {
+    border: black 2px solid;
+    display: inline-block;
+}
+
+.cc-header-subtitle {
+    border-bottom: black 1px solid;
+    display: inline-block;
+}
