@@ -5,6 +5,7 @@
 .cc-header-title {
     border: black 2px solid;
     display: inline-block;
+    padding: 2rem;
 }
 
 .cc-header-subtitle {

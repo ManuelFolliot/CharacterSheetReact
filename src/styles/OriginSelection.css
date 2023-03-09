@@ -1,0 +1,8 @@
+#cc-OriginSelection {
+    display: flex;
+    align-items: center;
+}
+
+#cc-OriginSelection ul {
+    list-style: none;
+}

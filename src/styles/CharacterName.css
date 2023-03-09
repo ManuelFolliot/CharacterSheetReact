@@ -1,0 +1,13 @@
+#cc-form {
+    display: flex;
+    justify-content: space-evenly;
+}
+
+#cc-form input {
+    width: 10rem;
+}
+
+#cc-character-name-button {
+    width: 5rem;
+    display: inline-block;
+}
