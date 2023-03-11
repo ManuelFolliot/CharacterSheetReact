@@ -1,8 +1,26 @@
 #cc-OriginSelection {
     display: flex;
     align-items: center;
+    justify-content: space-between;
 }
 
 #cc-OriginSelection ul {
     list-style: none;
+}
+
+#cc-OriginSelection ul li {
+    border: 1px solid black;
+    margin: 1rem;
+    padding: 0.5rem;
+}
+
+#originList {
+    width: 20%;
+}
+
+#originDescription {
+    width: 70%;
+    height: 100%;
+    border: 1px solid red;
+    padding: 0.5rem;
 }

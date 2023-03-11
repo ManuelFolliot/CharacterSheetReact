@@ -1,6 +1,8 @@
 #cc-form {
     display: flex;
     justify-content: space-evenly;
+    border: 2px solid black;
+    padding: 1rem;
 }
 
 #cc-form input {
@@ -10,4 +12,8 @@
 #cc-character-name-button {
     width: 5rem;
     display: inline-block;
+}
+
+form * {
+    margin: 0 1rem;
 }

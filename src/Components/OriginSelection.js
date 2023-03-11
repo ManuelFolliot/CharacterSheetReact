@@ -1,26 +1,48 @@
+import React, {useState} from 'react';
+import SurvivorOrigin from '../datas/OriginTexts/SurvivorOrigin';
+import MartianOrigin from '../datas/OriginTexts/MartianOrigin';
+import PartisanOrigin from '../datas/OriginTexts/PartisanOrigin';
 import '../styles/OriginSelection.css'
 
-function OriginSelection() {
+function OriginSelection(props) {
+
+    const [selectedOrigin, setSelectedOrigin] = useState('');
+
+    function handleOriginSelection(value) {
+        setSelectedOrigin(value);
+        props.onSelectedOrigin(value)
+    }
+
+    const origins = [
+        {label: 'Survivor', description: <SurvivorOrigin/>},
+        {label: 'Martian', description: <MartianOrigin/>},
+        {label: 'Partisan', description: <PartisanOrigin/>},
+    ];
+
+    const originList = origins.map((origin) => (
+        <li key={origin.value} onClick={() => handleOriginSelection(origin.label)}>
+            {origin.label}
+        </li>
+    ));
+
+    const selectedOriginDescription = origins.find((origin) => origin.label === selectedOrigin)?.description;
+
     return (
         <div>
-            <p>Choose your origin</p>
+        <p>Choose your origin. It will determine your starting skills and situation.</p>
             <div id='cc-OriginSelection'>
                 <ul id='originsList'>
-                    <li>Day of Cinders Survivor</li>
-                    <li>Martian Colonist</li>
-                    <li>Federated Communes partisan</li>
+                    {originList}                 
                 </ul>
-                <div id='originDescription'>
-                    <p>You were in North America when Yellowstone errupted. You survived the first year but you must now escape a dead continent.</p>
-                    <p>Your ancestors were among the first people to permently live on Mars. 
-                        As the Red Planet is experiencing enormous transformations, you must decide what you'll do.</p>
-                    <p>Mother Anarchy loves her children. The time to rise against the Great Companies of Jupiter and their mercenaries has come.
-                        The road ahead will be long and bloody, but such is the price of freedom.
-                    </p>
-                </div>
+                {selectedOrigin && (
+                    <div id='originDescription'>
+                        {selectedOriginDescription}
+                    </div>
+                )}
             </div>
         </div>
     )
 }
 
 export default OriginSelection
+
