@@ -1,12 +1,12 @@
 import { useState } from 'react';
 import '../styles/SkillDistribution.css';
 
-function SkillDistribution() {
+function SkillDistribution({baseSkills}) {
 
     const [skills, setSkills] = useState([
-        {label: 'Medecine', value: 0},
-        {label: 'Programming', value: 0},
-        {label: 'Marksmanship', value: 0},
+        {label: 'Medecine', value: baseSkills.Medecine},
+        {label: 'Programming', value: baseSkills.Programming},
+        {label: 'Marksmanship', value: baseSkills.Marksmanship},
     ]);
 
     const [skillPointsPool, setSkillPointsPool] = useState(10);
@@ -21,7 +21,7 @@ function SkillDistribution() {
     }
 
     function removeSkillPoint(index) {
-        if (skills[index].value > 0) {
+        if (skills[index].value > baseSkills[skills[index].label]) {
             const updatedSkills = [...skills];
             updatedSkills[index].value--;
             setSkills(updatedSkills);
