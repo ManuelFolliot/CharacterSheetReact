@@ -1,7 +1,8 @@
 function CharacterSheet() {
     return(
-        <div>
-            <p>Name</p> 
+        <div class="characterSheet">
+            <p>Name:</p>
+            <p>Skills:</p> 
         </div>
     )
 }

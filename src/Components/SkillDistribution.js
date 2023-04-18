@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import '../styles/SkillDistribution.css';
 
-function SkillDistribution({baseSkills}) {
+function SkillDistribution({baseSkills, originSelected}) {
 
     const [skills, setSkills] = useState([
         {label: 'Medecine', value: baseSkills.Medecine},
@@ -10,6 +10,16 @@ function SkillDistribution({baseSkills}) {
     ]);
 
     const [skillPointsPool, setSkillPointsPool] = useState(10);
+
+    useEffect(() => {
+        const updatedSkills = [
+            {label: 'Medecine', value: baseSkills.Medecine},
+            {label: 'Programming', value: baseSkills.Programming},
+            {label: 'Marksmanship', value: baseSkills.Marksmanship}
+        ];
+        setSkills(updatedSkills);
+        setSkillPointsPool(10);
+    }, [baseSkills, originSelected]);
 
     function addSkillPoint(index) {
         if (skillPointsPool > 0) {
