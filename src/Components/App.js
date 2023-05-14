@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
 import '../styles/App.css';
+import React, { useState, useEffect} from 'react';
 import Header from './Header';
 import CharacterName from './CharacterName';
 import OriginSelection from './OriginSelection';
@@ -8,23 +8,34 @@ import CharacterSheet from './CharacterSheet';
 
 function App() {
 
-  const [showCharacterSheet, setShowCharacterSheet] = useState(false);
+  /*************************************
+   * *************************************
+   * GESTION DU NOM ET GENRE DU PERSONNAGE
+   * *************************************
+  **************************************/
 
-  const handleCharacterSheet = () => {
-    setShowCharacterSheet(!showCharacterSheet);
-  }
+  const [characterInfo, setCharacterInfo] = useState({
+    firstname: "",
+    lastname: "",
+    gender: ""
+  })
 
-  const characterSheetBackground = {
-    backgroundColor: showCharacterSheet ? "#ccc" : "transparent",
+  const handleCharacterInfoChange = (key, value) => {
+    setCharacterInfo({
+      ...characterInfo,
+      [key]: value
+    });
   };
 
-  //Vérifie que l'utilisateur a bien rempli les champs prénom, nom et genre avant de pouvoir cliquer sur Valider
-  //et afficher la suite. Le boutton "valider" disparaitra.
-  const [characterNameValidated, setCharacterNameValidated] = useState(false);
-  const handleCharacterNameValidation = () => {
-    setCharacterNameValidated(true);
-    console.log()
-  };
+  useEffect(() => {
+    console.log(characterInfo);
+  }, [characterInfo]);
+
+  /********************************
+   * *************************************
+   * GESTION DES COMPETENCES
+   * *************************************
+  ********************************/
 
   const [baseSkills, setBaseSkills] = useState({
     Medecine: 0,
@@ -37,7 +48,7 @@ function App() {
 
   function handleSelectedOrigin(originValue) {
     setOriginSelected(originValue);
-
+  
     switch(originValue) {
       case 'Survivor':
         setBaseSkills({Medecine: 5, Programming: 2, Marksmanship: 4});
@@ -58,23 +69,126 @@ function App() {
     console.log("Updating skills");
   }, [baseSkills]);
 
+
+    /********************************************
+   * *************************************
+   * GESTION DE L'AFFICHAGE DES COMPOSANTS
+   * *************************************
+   ********************************************/
+
+    /**
+     * Affichage de la fiche perso
+     **/
+
+    const [showCharacterSheet, setShowCharacterSheet] = useState(false);
+
+    const handleCharacterSheet = () => {
+      setShowCharacterSheet(!showCharacterSheet);
+    }
+    
+    /**
+     * Navigation entre les composants; Boutons suivants et précédents
+     **/
+
+    const [currentStep, setCurrentStep] = useState(0);
+  
+    const handleNext = () => {
+      if (currentStep === 0 && isCharacterInfoChecked){
+        setCurrentStep(currentStep => currentStep + 1);
+      }
+      console.log(currentStep)
+    };
+  
+    const handlePrevious = () => {
+      setCurrentStep(currentStep => currentStep - 1);
+    }
+  
+    /**
+     * Validation des informations de base du personnage
+     **/
+
+    const [isCharacterInfoChecked, setIsCharacterInfoChecked] = useState(false);
+
+    useEffect(() => {
+      setIsCharacterInfoChecked(
+        characterInfo.firstname !== '',
+        characterInfo.lastname !== '',
+        characterInfo.gender !== ''
+      );
+    }, [characterInfo]);
+
+    /**
+     * Validation de la sélection d'origine du personnage
+     **/
+
+    
+  
+    /*************************************
+     * *************************************
+     * STYLE DE LA FICHE PERSONNAGE
+     * *************************************
+     *************************************/
+  
+    const characterSheetBackground = {
+      backgroundColor: showCharacterSheet ? "#ccc" : "transparent",
+      height: '100%'
+    };
+  
+    const containerStyle = {
+      width: showCharacterSheet ? '80%' : '100%'
+    };
+
+  /*************************
+     * *************************************
+     * COMPOSANTS
+     * *************************************
+     ************************/
+
+  const components = [
+    /**
+     * Sélection du prénom, nom, genre
+     **/
+    <CharacterName characterInfo={characterInfo} 
+    onCharacterInfoChange={handleCharacterInfoChange}
+    isCharacterInfoChecked={isCharacterInfoChecked} setIsCharacterInfoChecked={setIsCharacterInfoChecked}/>,
+    /**
+     * Sélection de l'origine (initialisée à null)
+     **/
+    (originSelected === '' || currentStep >= 1) && (
+      <OriginSelection onSelectedOrigin={handleSelectedOrigin}/>
+    ),
+    /**
+     * Attribution des points de compétences
+     **/
+    baseSkills === {} ? null : (
+      <SkillDistribution baseSkills={baseSkills}/>
+    )
+  ];
+
   return (
     <div>
+      <div id="charactersheet-button-container">
+       <button onClick={handleCharacterSheet}>
+        {showCharacterSheet ? 'Hide Character Sheet' : 'Show Character Sheet'}
+      </button>
+      </div>
       <div id="button-container">
-        <button onClick={handleCharacterSheet}>
-          {showCharacterSheet ? 'Hide Character Sheet' : 'Show Character Sheet'}
-        </button>
+        {currentStep > 0 && <button onClick={handlePrevious}>Précédent</button>}
+        {currentStep < components.length - 1 && 
+        <button onClick={handleNext} 
+        disabled={!characterInfo.firstname || !characterInfo.lastname || !characterInfo.gender}>
+          Suivant</button>}
       </div>
       <div id='container'>
-        <Header />  
+        <Header />
         <div id='sidebarSheet'>
           <div style={characterSheetBackground}>
-            {showCharacterSheet && <CharacterSheet/>}
+            {showCharacterSheet && <CharacterSheet characterInfo={characterInfo} />}
           </div>
         </div>
-        <CharacterName onValidate={handleCharacterNameValidation}/>
-        {characterNameValidated && <OriginSelection onSelectedOrigin={handleSelectedOrigin}/>}
-        {originSelected !=='' && <SkillDistribution baseSkills={baseSkills}/>}
+        <div id="characterNameContainer" style={containerStyle}>
+          {components[currentStep]}
+        </div>
       </div>
     </div>
   );
