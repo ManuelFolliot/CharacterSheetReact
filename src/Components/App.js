@@ -4,6 +4,7 @@ import Header from './Header';
 import CharacterName from './CharacterName';
 import OriginSelection from './OriginSelection';
 import SkillDistribution from './SkillDistribution';
+import GearSelection from './GearSelection';
 import CharacterSheet from './CharacterSheet';
 
 function App() {
@@ -69,6 +70,25 @@ function App() {
     console.log("Updating skills");
   }, [baseSkills]);
 
+  const handleBaseSkillsChange = (updatedSkills) => {
+    setBaseSkills(updatedSkills);
+  };
+
+    /********************************************
+   * *************************************
+   * GESTION DE L'EQUIPEMENT
+   * *************************************
+   ********************************************/
+    
+    const [selectedGear, setSelectedGear] = useState([]);
+
+    const handleGearChange = (selectedGear) => {
+      setSelectedGear(selectedGear);
+    };
+
+    useEffect(() => {
+      console.log("Selected objects :", selectedGear);
+    }, [selectedGear])
 
     /********************************************
    * *************************************
@@ -96,6 +116,12 @@ function App() {
       if (currentStep === 0 && isCharacterInfoChecked){
         setCurrentStep(currentStep => currentStep + 1);
       }
+      if (currentStep === 1 && isOriginSelected){
+        setCurrentStep(currentStep => currentStep + 1)
+      }
+      if (currentStep === 2 && isSkillPointDisributed){
+        setCurrentStep(currentStep => currentStep + 1)
+      }
       console.log(currentStep)
     };
   
@@ -121,8 +147,40 @@ function App() {
      * Validation de la sélection d'origine du personnage
      **/
 
-    
+    const [isOriginSelected, setIsOriginSelected] = useState(false);
+
+    useEffect(() => {
+      setIsOriginSelected(
+        originSelected !== ''
+      );
+    }, [originSelected]);
+
+    useEffect(() => {
+      setIsOriginSelected(originSelected !== '');
+    }, [originSelected]);
   
+    /**
+     * Validation de l'attribution des points de compétence
+     **/
+
+    const [isSkillPointDisributed, setIsSkillPointDistributed] = useState(false);
+
+    const [skillPointsPool, setSkillPointsPool] = useState(10);
+
+    function handleSkillPointsChange(updateSkillPointsPool){
+      setSkillPointsPool(updateSkillPointsPool);
+    }
+
+    useEffect(() => {
+      setIsSkillPointDistributed(
+        skillPointsPool === 0
+      );
+    }, [skillPointsPool])
+
+    /**
+     * 
+     */
+
     /*************************************
      * *************************************
      * STYLE DE LA FICHE PERSONNAGE
@@ -161,8 +219,16 @@ function App() {
      * Attribution des points de compétences
      **/
     baseSkills === {} ? null : (
-      <SkillDistribution baseSkills={baseSkills}/>
-    )
+      <SkillDistribution 
+      baseSkills={baseSkills}
+      originSelected={originSelected}
+      skillPointsPool={skillPointsPool}
+      onSkillPointsChange={handleSkillPointsChange}/>
+    ),
+    /**
+     * Sélection de l'équipement
+     **/
+    currentStep > 1 && <GearSelection onGearSelect={handleGearChange}/>
   ];
 
   return (
@@ -179,11 +245,19 @@ function App() {
         disabled={!characterInfo.firstname || !characterInfo.lastname || !characterInfo.gender}>
           Suivant</button>}
       </div>
+      
       <div id='container'>
         <Header />
         <div id='sidebarSheet'>
           <div style={characterSheetBackground}>
-            {showCharacterSheet && <CharacterSheet characterInfo={characterInfo} />}
+            {showCharacterSheet && <CharacterSheet 
+            characterInfo={characterInfo} 
+            originSelected={originSelected} 
+            baseSkills={baseSkills}
+            skillPointsPool={skillPointsPool}
+            onSkillPointsChange={handleSkillPointsChange}
+            onBaseSkillsChange={handleBaseSkillsChange}
+            selectedGear={selectedGear}/>}
           </div>
         </div>
         <div id="characterNameContainer" style={containerStyle}>
